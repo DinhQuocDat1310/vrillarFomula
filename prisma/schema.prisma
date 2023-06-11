@@ -1,0 +1,115 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Team {
+  id                 Int           @id @default(autoincrement())
+  name               String
+  fullName           String
+  base               String
+  rank               Int
+  points             Int
+  teamChief          String
+  technicalChief     String
+  chassis            String
+  powerUnit          String
+  firstTeamEntry     Int
+  worldChampionships Int
+  highRaceFinish     String
+  rolePositions      Int
+  fastestLaps        Int
+  imgLogo            String
+  imgTeamCar         String
+  driver             Driver[]
+  teamProfile        TeamProfile[]
+  event              Event?        @relation(fields: [eventId], references: [id])
+  eventId            Int?
+}
+
+model Driver {
+  id                  Int      @id @default(autoincrement())
+  name                String
+  rank                Int
+  points              Int
+  country             String
+  podiums             String
+  grandsPrixEntered   Int
+  worldChampionships  Int
+  highestRaceFinished String
+  highestGridPosition Int
+  dateOfBirth         DateTime
+  placeOfBirth        String
+  imgCountry          String
+  imgDriver           String
+  biography           String
+  teamId              Int?
+  team                Team?    @relation(fields: [teamId], references: [id])
+}
+
+model TeamProfile {
+  id                Int    @id @default(autoincrement())
+  intro             String
+  year              Int
+  descriptionOfYear String
+  imgProfile        String
+  team              Team?  @relation(fields: [teamId], references: [id])
+  teamId            Int?
+}
+
+model Schedule {
+  id          Int     @id @default(autoincrement())
+  name        String
+  description String
+  event       Event[]
+}
+
+model Event {
+  id             Int              @id @default(autoincrement())
+  title          String
+  startDate      DateTime
+  endDate        DateTime
+  placeName      String
+  description    String
+  imgCountry     String
+  imgEvent       String
+  schedule       Schedule?        @relation(fields: [scheduleId], references: [id])
+  scheduleId     Int?
+  timeTableEvent TimeTableEvent[]
+  team           Team[]
+}
+
+model TimeTableEvent {
+  id          Int           @id @default(autoincrement())
+  title       String
+  time        DateTime
+  description String
+  event       Event?        @relation(fields: [eventId], references: [id])
+  eventId     Int?
+  eventResult EventResult[]
+}
+
+model EventResult {
+  id               Int             @id @default(autoincrement())
+  time             String
+  gap              String
+  laps             String
+  timeTableEvent   TimeTableEvent? @relation(fields: [timeTableEventId], references: [id])
+  timeTableEventId Int?
+}
+
+model Video {
+  id          Int      @id @default(autoincrement())
+  title       String
+  length      String
+  urlVideo    String
+  dateCreated DateTime
+  description String
+}
