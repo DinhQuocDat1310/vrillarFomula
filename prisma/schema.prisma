@@ -13,7 +13,7 @@ datasource db {
 model Team {
   id                 Int           @id @default(autoincrement())
   name               String
-  fullName           String
+  fullTeamName       String
   base               String
   rank               Int
   points             Int
@@ -21,13 +21,15 @@ model Team {
   technicalChief     String
   chassis            String
   powerUnit          String
-  firstTeamEntry     Int
-  worldChampionships Int
-  highRaceFinish     String
-  rolePositions      Int
-  fastestLaps        Int
+  firstTeamEntry     String
+  intro              String
+  worldChampionships String
+  highestRaceFinish  String
+  polePositions      String
+  fastestLaps        String
   imgLogo            String
   imgTeamCar         String
+  imgBrandLogo       String
   driver             Driver[]
   teamProfile        TeamProfile[]
   event              Event?        @relation(fields: [eventId], references: [id])
@@ -35,31 +37,30 @@ model Team {
 }
 
 model Driver {
-  id                  Int      @id @default(autoincrement())
+  id                  Int    @id @default(autoincrement())
   name                String
   rank                Int
   points              Int
   country             String
   podiums             String
-  grandsPrixEntered   Int
-  worldChampionships  Int
-  highestRaceFinished String
-  highestGridPosition Int
-  dateOfBirth         DateTime
+  grandsPrixEntered   String
+  worldChampionships  String
+  highestRaceFinish   String
+  highestGridPosition String
+  dateOfBirth         String
   placeOfBirth        String
   imgCountry          String
   imgDriver           String
+  imgNumber           String
   biography           String
   teamId              Int?
-  team                Team?    @relation(fields: [teamId], references: [id])
+  team                Team?  @relation(fields: [teamId], references: [id])
 }
 
 model TeamProfile {
   id                Int    @id @default(autoincrement())
-  intro             String
   year              Int
   descriptionOfYear String
-  imgProfile        String
   team              Team?  @relation(fields: [teamId], references: [id])
   teamId            Int?
 }
