@@ -1,5 +1,3 @@
-import { BASE_ROUTE } from './../../src/constant/baseRoute';
-import { Prisma } from '@prisma/client';
 import axios from 'axios';
 import cheerio, { Cheerio, CheerioAPI, Element } from 'cheerio';
 

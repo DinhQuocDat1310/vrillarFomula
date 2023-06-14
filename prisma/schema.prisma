@@ -32,8 +32,8 @@ model Team {
   imgBrandLogo       String
   driver             Driver[]
   teamProfile        TeamProfile[]
-  event              Event?        @relation(fields: [eventId], references: [id])
-  eventId            Int?
+  schedule           Schedule?     @relation(fields: [scheduleId], references: [id])
+  scheduleId         Int?
 }
 
 model Driver {
@@ -66,34 +66,28 @@ model TeamProfile {
 }
 
 model Schedule {
-  id          Int     @id @default(autoincrement())
-  name        String
-  description String
-  event       Event[]
-}
-
-model Event {
   id             Int              @id @default(autoincrement())
+  dataMeetingKey String
   title          String
-  startDate      DateTime
-  endDate        DateTime
+  startDate      String
+  endDate        String
+  month          String
   placeName      String
   description    String
   imgCountry     String
   imgEvent       String
-  schedule       Schedule?        @relation(fields: [scheduleId], references: [id])
-  scheduleId     Int?
-  timeTableEvent TimeTableEvent[]
   team           Team[]
+  timeTableEvent TimeTableEvent[]
 }
 
 model TimeTableEvent {
   id          Int           @id @default(autoincrement())
   title       String
-  time        DateTime
+  date        String
+  month       String
   description String
-  event       Event?        @relation(fields: [eventId], references: [id])
-  eventId     Int?
+  schedule    Schedule?     @relation(fields: [scheduleId], references: [id])
+  scheduleId  Int?
   eventResult EventResult[]
 }
 
