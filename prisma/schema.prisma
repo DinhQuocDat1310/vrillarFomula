@@ -11,7 +11,7 @@ datasource db {
 }
 
 model Team {
-  id                 Int           @id @default(autoincrement())
+  id                 String        @id @default(uuid())
   name               String
   fullTeamName       String
   base               String
@@ -33,11 +33,11 @@ model Team {
   driver             Driver[]
   teamProfile        TeamProfile[]
   schedule           Schedule?     @relation(fields: [scheduleId], references: [id])
-  scheduleId         Int?
+  scheduleId         String?
 }
 
 model Driver {
-  id                  Int    @id @default(autoincrement())
+  id                  String  @id @default(uuid())
   name                String
   rank                Int
   points              Int
@@ -53,20 +53,20 @@ model Driver {
   imgDriver           String
   imgNumber           String
   biography           String
-  teamId              Int?
-  team                Team?  @relation(fields: [teamId], references: [id])
+  team                Team?   @relation(fields: [teamId], references: [id])
+  teamId              String?
 }
 
 model TeamProfile {
-  id                Int    @id @default(autoincrement())
+  id                String  @id @default(uuid())
   year              Int
   descriptionOfYear String
-  team              Team?  @relation(fields: [teamId], references: [id])
-  teamId            Int?
+  Team              Team?   @relation(fields: [teamId], references: [id])
+  teamId            String?
 }
 
 model Schedule {
-  id             Int              @id @default(autoincrement())
+  id             String           @id @default(uuid())
   dataMeetingKey String
   title          String
   startDate      String
@@ -81,27 +81,27 @@ model Schedule {
 }
 
 model TimeTableEvent {
-  id          Int           @id @default(autoincrement())
+  id          String        @id @default(uuid())
   title       String
   date        String
   month       String
   description String
-  schedule    Schedule?     @relation(fields: [scheduleId], references: [id])
-  scheduleId  Int?
   eventResult EventResult[]
+  schedule    Schedule?     @relation(fields: [scheduleId], references: [id])
+  scheduleId  String?
 }
 
 model EventResult {
-  id               Int             @id @default(autoincrement())
+  id               String          @id @default(uuid())
   time             String
   gap              String
   laps             String
   timeTableEvent   TimeTableEvent? @relation(fields: [timeTableEventId], references: [id])
-  timeTableEventId Int?
+  timeTableEventId String?
 }
 
 model Video {
-  id          Int      @id @default(autoincrement())
+  id          String   @id @default(uuid())
   title       String
   length      String
   urlVideo    String

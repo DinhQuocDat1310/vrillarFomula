@@ -18,7 +18,7 @@ async function bootstrap() {
     origin: 'http://localhost:3000',
   });
   const document = SwaggerModule.createDocument(app, config);
-  SwaggerModule.setup('tus_api', app, document);
+  SwaggerModule.setup('vrillarFomular1_api', app, document);
   const appConfigService = app.get<AppConfigService>(AppConfigService);
   const prismaService = app.get(PrismaService);
   await prismaService.enableShutdownHooks(app);
