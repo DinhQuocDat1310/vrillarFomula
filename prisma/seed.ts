@@ -3,13 +3,16 @@ import { PrismaService } from '../src/prisma/prisma.service';
 import { drivers } from './db/driver';
 import { teams } from './db/team';
 import { schedules } from './db/schedule';
+import { Driver } from 'src/driver/entities/driver';
+import { Team } from 'src/team/entities/team.entity';
+import { Schedule } from 'src/schedule/entities/schedule';
 
 async function main() {
   const prisma: PrismaService = new PrismaService();
   const logger: Logger = new Logger();
-  const dataTeam: any = await teams();
-  const dataDriver: any = await drivers();
-  const dataSchedule: any = await schedules();
+  const dataTeam: Array<Team> = await teams();
+  const dataDriver: Array<Driver> = await drivers();
+  const dataSchedule: Array<Schedule> = await schedules();
 
   try {
     for (let index = 0; index < dataSchedule.length; index++) {
@@ -27,7 +30,6 @@ async function main() {
         timeTableEvent,
         status,
       } = dataSchedule[index];
-
       await prisma.schedule.create({
         data: {
           title,
@@ -42,12 +44,14 @@ async function main() {
           imgEvent,
         },
       });
-      const scheduleFound = await prisma.schedule.findFirst({
+      const scheduleFound: Schedule = await prisma.schedule.findFirst({
         where: {
           description: titleSchedule,
         },
       });
+
       for (let j = 0; j < timeTableEvent.length; j++) {
+        const { eventResults } = timeTableEvent[j];
         await prisma.timeTableEvent.create({
           data: {
             title: timeTableEvent[j].title,
@@ -59,15 +63,22 @@ async function main() {
                 id: scheduleFound.id,
               },
             },
+            eventResult: {
+              createMany: {
+                data: eventResults,
+              },
+            },
           },
         });
       }
     }
-    const allSchedules = await prisma.schedule.findMany({
+
+    const allSchedules: Array<Schedule> = await prisma.schedule.findMany({
       where: {
         status: 'COMPLETED',
       },
     });
+
     for (let index = 0; index < dataTeam.length; index++) {
       const {
         name,
@@ -118,10 +129,11 @@ async function main() {
         },
       });
     }
-    const allTeams = await prisma.team.findMany();
+
+    const allTeams: Array<Team> = await prisma.team.findMany();
     for (const schedule of allSchedules) {
       await Promise.all(
-        allTeams.map((team) =>
+        allTeams.map((team: Team) =>
           prisma.schedule.update({
             where: {
               id: schedule.id,
@@ -137,6 +149,7 @@ async function main() {
         ),
       );
     }
+
     for (let index = 0; index < dataDriver.length; index++) {
       const {
         name,
@@ -156,7 +169,7 @@ async function main() {
         biography,
         team,
       } = dataDriver[index];
-      const teamFound = await prisma.team.findFirst({
+      const teamFound: Team = await prisma.team.findFirst({
         where: {
           name: team,
         },

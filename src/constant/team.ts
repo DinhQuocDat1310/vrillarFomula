@@ -1,1 +1,1 @@
-export const TEAM_PER_PAGE: number = 3;
+export const TEAM_PER_PAGE: number = 10;

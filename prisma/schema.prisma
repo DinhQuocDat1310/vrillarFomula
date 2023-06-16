@@ -98,18 +98,18 @@ model TimeTableEvent {
 
 model EventResult {
   id               String          @id @default(uuid())
-  time             String
-  gap              String
-  laps             String
+  time             String?
+  gap              String?
+  laps             String?
+  timeRetired      String?
+  driver           String
+  car              String
+  pos              String
+  no               String
+  q1               String?
+  q2               String?
+  q3               String?
+  points           String?
   timeTableEvent   TimeTableEvent? @relation(fields: [timeTableEventId], references: [id])
   timeTableEventId String?
-}
-
-model Video {
-  id          String   @id @default(uuid())
-  title       String
-  length      String
-  urlVideo    String
-  dateCreated DateTime
-  description String
 }

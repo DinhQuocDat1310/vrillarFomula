@@ -5,6 +5,8 @@ import { ScheduleModule } from './schedule/module';
 import { AppConfigService } from './config/appConfigService';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { PrismaService } from './prisma/prisma.service';
+import { TimetableModule } from './timetable/module';
+import { EventResultModule } from './event-result/module';
 
 @Module({
   imports: [
@@ -15,6 +17,8 @@ import { PrismaService } from './prisma/prisma.service';
       envFilePath: '.env',
       isGlobal: true,
     }),
+    TimetableModule,
+    EventResultModule,
   ],
   controllers: [],
   providers: [AppConfigService, PrismaService],

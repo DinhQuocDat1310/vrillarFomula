@@ -13,7 +13,8 @@ import {
   ApiOperation,
   ApiTags,
 } from '@nestjs/swagger';
-import { Prisma } from '@prisma/client';
+import { Driver, Prisma } from '@prisma/client';
+import { ListDrivers } from './entities/driver';
 
 @Controller('driver')
 @ApiTags('Driver')
@@ -28,7 +29,7 @@ export class DriverController {
   async findAllDriversSortByRank(
     @Query('page') page: string,
     @Query('sortMethod') sortMethod: Prisma.SortOrder,
-  ) {
+  ): Promise<Array<ListDrivers>> {
     return await this.driverService.getListDriversSortByRank(page, sortMethod);
   }
 
@@ -40,7 +41,7 @@ export class DriverController {
   async findAllDriversSortByPoints(
     @Query('page') page: string,
     @Query('sortMethod') sortMethod: Prisma.SortOrder,
-  ) {
+  ): Promise<Array<ListDrivers>> {
     return await this.driverService.getListDriversSortByPoints(
       page,
       sortMethod,
@@ -52,7 +53,7 @@ export class DriverController {
   @ApiBadRequestResponse({ description: 'Failed view detail Drivers' })
   @ApiOperation({ summary: 'View details of Driver [View by ID Driver]' })
   @HttpCode(HttpStatus.OK)
-  async viewDetailDriver(@Param('id') id: string) {
+  async viewDetailDriver(@Param('id') id: string): Promise<Driver> {
     return await this.driverService.getDetailOfDriver(id);
   }
 }

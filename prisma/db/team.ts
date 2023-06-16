@@ -1,20 +1,26 @@
-import axios from 'axios';
+import { TeamProfile } from '@prisma/client';
+import axios, { AxiosResponse } from 'axios';
 import cheerio, { Cheerio, CheerioAPI, Element } from 'cheerio';
+import {
+  BasicDataTeam,
+  DataTeamFormat,
+  ProfileTeam,
+  Team,
+} from 'src/team/entities/team.entity';
 
-const fetchDataTeam = async () => {
-  const basicDataTeam = await axios.get(
+const fetchDataTeam = async (): Promise<Array<Team>> => {
+  const basicDataTeam: AxiosResponse<any, any> = await axios.get(
     'https://www.formula1.com/en/teams.html',
   );
   if (basicDataTeam.status === 200) {
     const $: CheerioAPI = cheerio.load(basicDataTeam.data);
     const listTeamLink: Cheerio<Element> = $('.listing-item-wrapper');
-    // const finalResult: Array<Prisma.TeamCreateInput> = [];
-    const finalResult: any = [];
+    const finalResult: Array<Team> = [];
     for (const element of listTeamLink) {
-      const rank: Number = Number(
+      const rank: number = parseInt(
         $(element).find('.listing-standing .rank').text(),
       );
-      const points: Number = Number(
+      const points: number = parseInt(
         $(element).find('.listing-standing .points .f1-wide--s').text(),
       );
       const name: string = $(element)
@@ -26,13 +32,16 @@ const fetchDataTeam = async () => {
       const imgTeamCar: string = $(element)
         .find('.listing-image .team-car img')
         .attr('data-src');
-      const dataTeam = await fetchAdditionalDataTeam(name.replace(/ /g, '-'), {
-        name,
-        rank,
-        points,
-        imgLogo,
-        imgTeamCar,
-      });
+      const dataTeam: Team = await fetchAdditionalDataTeam(
+        name.replace(/ /g, '-'),
+        {
+          name,
+          rank,
+          points,
+          imgLogo,
+          imgTeamCar,
+        },
+      );
       finalResult.push(dataTeam);
     }
     return finalResult;
@@ -43,40 +52,40 @@ const fetchDataTeam = async () => {
 
 const fetchAdditionalDataTeam = async (
   name: string,
-  additionalData: Object,
-) => {
-  const additionalDataTeam = await axios.get(
+  additionalData: BasicDataTeam,
+): Promise<Team> => {
+  const additionalDataTeam: AxiosResponse<any, any> = await axios.get(
     `https://www.formula1.com/en/teams/${name}.html`,
   );
   if (additionalDataTeam.status === 200) {
     const $: CheerioAPI = cheerio.load(additionalDataTeam.data);
-    const imgBrandLogo = $('.brand-logo img').attr('src');
-    const intro = $('.information .text p').text();
+    const imgBrandLogo: string = $('.brand-logo img').attr('src');
+    const intro: string = $('.information .text p').text();
     const tableData: Cheerio<Element> = $('tbody tr');
     const resultBeforeFormat: any = {};
-    const dataProfile = [];
-    tableData.each((index, element) => {
+    const dataProfile: Array<ProfileTeam> = [];
+    tableData.each((index: number, element) => {
       const key: string = $(element).find('.stat-key .text').text().trim();
       const value: string = $(element).find('.stat-value').text().trim();
       resultBeforeFormat[key] = value;
     });
     $('.information')
       .find('h4, p')
-      .each((index, element) => {
-        const year = Number($(element).text().trim());
-        const descriptionOfYear = $(element).next().text().trim();
+      .each((index: number, element) => {
+        const year: number = parseInt($(element).text().trim());
+        const descriptionOfYear: string = $(element).next().text().trim();
 
         if (year && descriptionOfYear) {
           dataProfile.push({ year, descriptionOfYear });
         }
       });
-    const teamProfile = dataProfile.filter(
-      (data) => typeof data.year === 'number',
+    const teamProfile: ProfileTeam[] = dataProfile.filter(
+      (data: TeamProfile) => typeof data.year === 'number',
     );
 
     const resultAfterFormat: any = {};
-    Object.keys(resultBeforeFormat).forEach((key) => {
-      const newKey = key
+    Object.keys(resultBeforeFormat).forEach((key: string) => {
+      const newKey: string = key
         .replace(/([A-Z])/g, ' $1')
         .replace(/_/g, ' ')
         .toLowerCase()
@@ -99,6 +108,6 @@ const fetchAdditionalDataTeam = async (
   }
 };
 
-export const teams = async () => {
+export const teams = async (): Promise<Array<Team>> => {
   return await fetchDataTeam();
 };

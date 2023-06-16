@@ -3,11 +3,10 @@ import {
   BadRequestException,
   InternalServerErrorException,
 } from '@nestjs/common';
-import { CreateTeamDto } from './dto/create.dto';
-import { UpdateTeamDto } from './dto/update.dto';
-import { Prisma } from '@prisma/client';
+import { Prisma, Team } from '@prisma/client';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { TEAM_PER_PAGE } from 'src/constant/team';
+import { ListTeams } from './entities/team.entity';
 
 @Injectable()
 export class TeamService {
@@ -16,7 +15,7 @@ export class TeamService {
   getListTeamsSortByRank = async (
     page: string,
     sortMethod: Prisma.SortOrder,
-  ) => {
+  ): Promise<Array<ListTeams>> => {
     let sortType = sortMethod.toLowerCase();
     if (Number(page) <= 0 || isNaN(Number(page)))
       throw new BadRequestException('Not found or Start with page: 1');
@@ -52,7 +51,7 @@ export class TeamService {
   getListTeamsSortByPoints = async (
     page: string,
     sortMethod: Prisma.SortOrder,
-  ) => {
+  ): Promise<Array<ListTeams>> => {
     let sortType = sortMethod.toLowerCase();
     if (Number(page) <= 0 || isNaN(Number(page)))
       throw new BadRequestException('Not found or Start with page: 1');
@@ -85,11 +84,11 @@ export class TeamService {
     }
   };
 
-  getDetailOfTeam = async (id: string) => {
+  getDetailOfTeam = async (id: string): Promise<Team> => {
     return await this.findTeamByID(id);
   };
 
-  findTeamByID = async (id: string) => {
+  findTeamByID = async (id: string): Promise<Team> => {
     const team = await this.prisma.team.findFirst({
       where: {
         id,

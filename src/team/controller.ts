@@ -13,7 +13,8 @@ import {
   ApiOperation,
   ApiTags,
 } from '@nestjs/swagger';
-import { Prisma } from '@prisma/client';
+import { Prisma, Team } from '@prisma/client';
+import { ListTeams } from './entities/team.entity';
 
 @Controller('team')
 @ApiTags('Team')
@@ -28,7 +29,7 @@ export class TeamController {
   async findAllTeamsSortByRank(
     @Query('page') page: string,
     @Query('sortMethod') sortMethod: Prisma.SortOrder,
-  ) {
+  ): Promise<Array<ListTeams>> {
     return await this.teamService.getListTeamsSortByRank(page, sortMethod);
   }
 
@@ -40,7 +41,7 @@ export class TeamController {
   async findAllTeamsSortByPoints(
     @Query('page') page: string,
     @Query('sortMethod') sortMethod: Prisma.SortOrder,
-  ) {
+  ): Promise<Array<ListTeams>> {
     return await this.teamService.getListTeamsSortByPoints(page, sortMethod);
   }
 
@@ -49,7 +50,7 @@ export class TeamController {
   @ApiBadRequestResponse({ description: 'Failed view detail Teams' })
   @ApiOperation({ summary: 'View details of Team [View by ID Team]' })
   @HttpCode(HttpStatus.OK)
-  async viewDetailDriver(@Param('id') id: string) {
+  async viewDetailDriver(@Param('id') id: string): Promise<Team> {
     return await this.teamService.getDetailOfTeam(id);
   }
 }

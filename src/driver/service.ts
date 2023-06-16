@@ -3,9 +3,10 @@ import {
   Injectable,
   InternalServerErrorException,
 } from '@nestjs/common';
-import { Prisma } from '@prisma/client';
+import { Driver, Prisma } from '@prisma/client';
 import { DRIVER_PER_PAGE } from 'src/constant/driver';
 import { PrismaService } from 'src/prisma/prisma.service';
+import { ListDrivers } from './entities/driver';
 
 @Injectable()
 export class DriverService {
@@ -14,7 +15,7 @@ export class DriverService {
   getListDriversSortByRank = async (
     page: string,
     sortMethod: Prisma.SortOrder,
-  ) => {
+  ): Promise<Array<ListDrivers>> => {
     let sortType = sortMethod.toLowerCase();
     if (Number(page) <= 0 || isNaN(Number(page)))
       throw new BadRequestException('Not found or Start with page: 1');
@@ -50,7 +51,7 @@ export class DriverService {
   getListDriversSortByPoints = async (
     page: string,
     sortMethod: Prisma.SortOrder,
-  ) => {
+  ): Promise<Array<ListDrivers>> => {
     let sortType = sortMethod.toLowerCase();
     if (Number(page) <= 0 || isNaN(Number(page)))
       throw new BadRequestException('Not found or Start with page: 1');
@@ -83,11 +84,11 @@ export class DriverService {
     }
   };
 
-  getDetailOfDriver = async (id: string) => {
+  getDetailOfDriver = async (id: string): Promise<Driver> => {
     return await this.findDriverByID(id);
   };
 
-  findDriverByID = async (id: string) => {
+  findDriverByID = async (id: string): Promise<Driver> => {
     const driver = await this.prisma.driver.findFirst({
       where: {
         id,
