@@ -1,3 +1,4 @@
+import { StatusSchedule } from '@prisma/client';
 import axios from 'axios';
 import cheerio, { Cheerio, CheerioAPI, Element } from 'cheerio';
 import * as moment from 'moment';
@@ -83,7 +84,7 @@ const fetchDataSchedule = async () => {
 
 const fetchAdditionalDataSchedule = async (
   placeName: string,
-  basicDataSchedule: Object,
+  basicDataSchedule: any,
 ) => {
   const additionalDataSchedule = await axios.get(
     `https://www.formula1.com/en/racing/2023/${placeName.replace(
@@ -98,12 +99,13 @@ const fetchAdditionalDataSchedule = async (
     const titleSchedule = $(titleRaceHub).find('.container .row h2').text();
     const listTitles: any = [];
     const timeTable: Array<object> = [];
+    let statusSchedule: StatusSchedule;
     dataTimeTableRow.each((i, element) => {
       const title = $(element).find('.f1-timetable--title').text().trim();
       const formatTitle = title.toLowerCase().replace(' ', '-');
       listTitles.push(formatTitle);
     });
-
+    const now = moment();
     for (const title of listTitles) {
       const dataTimeTable: Cheerio<Element> = $(`.js-${title}`);
       dataTimeTable.each((i, element) => {
@@ -121,30 +123,43 @@ const fetchAdditionalDataSchedule = async (
         if (dateStart === dateEnd) {
           date = dateStart;
         }
-        let description: any = $(element)
+        let description: string = $(element)
           .find('.f1-flag--finish')
           .text()
           .trim();
 
         if (!description) {
-          if (!description) {
-            if (placeName === 'Great Britain') {
-              description = formatDateRegion(timeStart, timeEnd, 6);
-            } else if (placeName === 'Singapore') {
-              description = formatDateRegion(timeStart, timeEnd, 23);
-            } else if (placeName === 'Japan') {
-              description = formatDateRegion(timeStart, timeEnd, 22);
-            } else if (placeName === 'Qatar') {
-              description = formatDateRegion(timeStart, timeEnd, 4);
-            } else if (placeName === 'Mexico') {
-              description = formatDateRegion(timeStart, timeEnd, -11);
-            } else if (placeName === 'Brazil') {
-              description = formatDateRegion(timeStart, timeEnd, 10);
-            } else {
-              description = formatDateRegion(timeStart, timeEnd, 5);
-            }
+          if (placeName === 'Great Britain') {
+            description = formatDateRegion(timeStart, timeEnd, 6);
+          } else if (placeName === 'Singapore') {
+            description = formatDateRegion(timeStart, timeEnd, 23);
+          } else if (placeName === 'Japan') {
+            description = formatDateRegion(timeStart, timeEnd, 22);
+          } else if (placeName === 'Qatar') {
+            description = formatDateRegion(timeStart, timeEnd, 4);
+          } else if (placeName === 'Mexico') {
+            description = formatDateRegion(timeStart, timeEnd, -11);
+          } else if (placeName === 'Brazil') {
+            description = formatDateRegion(timeStart, timeEnd, 10);
+          } else {
+            description = formatDateRegion(timeStart, timeEnd, 5);
           }
         }
+
+        const currentMonth = now.format('MMM');
+        let monthOfSchedule = basicDataSchedule.month;
+        if (basicDataSchedule.month.length === 7) {
+          monthOfSchedule = basicDataSchedule.month.slice(4);
+        }
+        const parseCurrentMonth = moment(currentMonth, 'MMM');
+        const parseCurrentMonthOfSchedule = moment(monthOfSchedule, 'MMM');
+
+        if (parseCurrentMonthOfSchedule.isBefore(parseCurrentMonth)) {
+          statusSchedule = StatusSchedule.COMPLETED;
+        } else {
+          statusSchedule = StatusSchedule.UPCOMING;
+        }
+
         timeTable.push({
           title,
           date,
@@ -164,6 +179,7 @@ const fetchAdditionalDataSchedule = async (
 
     basicDataSchedule['timeTableEvent'] = uniqueTimeTable;
     basicDataSchedule['titleSchedule'] = titleSchedule;
+    basicDataSchedule['status'] = statusSchedule;
     return {
       ...basicDataSchedule,
     };

@@ -1,5 +1,4 @@
 import { Logger } from '@nestjs/common';
-import { Prisma } from '@prisma/client';
 import { PrismaService } from '../src/prisma/prisma.service';
 import { drivers } from './db/driver';
 import { teams } from './db/team';
@@ -26,6 +25,7 @@ async function main() {
         imgCountry,
         titleSchedule,
         timeTableEvent,
+        status,
       } = dataSchedule[index];
 
       await prisma.schedule.create({
@@ -35,6 +35,7 @@ async function main() {
           startDate,
           endDate,
           month,
+          status,
           description,
           placeName,
           imgCountry,
@@ -46,7 +47,6 @@ async function main() {
           description: titleSchedule,
         },
       });
-
       for (let j = 0; j < timeTableEvent.length; j++) {
         await prisma.timeTableEvent.create({
           data: {
@@ -63,7 +63,11 @@ async function main() {
         });
       }
     }
-
+    const allSchedules = await prisma.schedule.findMany({
+      where: {
+        status: 'COMPLETED',
+      },
+    });
     for (let index = 0; index < dataTeam.length; index++) {
       const {
         name,
@@ -113,6 +117,25 @@ async function main() {
           },
         },
       });
+    }
+    const allTeams = await prisma.team.findMany();
+    for (const schedule of allSchedules) {
+      await Promise.all(
+        allTeams.map((team) =>
+          prisma.schedule.update({
+            where: {
+              id: schedule.id,
+            },
+            data: {
+              teams: {
+                connect: {
+                  id: team.id,
+                },
+              },
+            },
+          }),
+        ),
+      );
     }
     for (let index = 0; index < dataDriver.length; index++) {
       const {

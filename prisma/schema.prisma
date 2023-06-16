@@ -32,8 +32,7 @@ model Team {
   imgBrandLogo       String
   driver             Driver[]
   teamProfile        TeamProfile[]
-  schedule           Schedule?     @relation(fields: [scheduleId], references: [id])
-  scheduleId         String?
+  schedules          Schedule[]
 }
 
 model Driver {
@@ -76,8 +75,14 @@ model Schedule {
   description    String
   imgCountry     String
   imgEvent       String
-  team           Team[]
+  status         StatusSchedule?
+  teams          Team[]
   timeTableEvent TimeTableEvent[]
+}
+
+enum StatusSchedule {
+  COMPLETED
+  UPCOMING
 }
 
 model TimeTableEvent {
