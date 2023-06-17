@@ -1,42 +1,51 @@
-<p align="center">
-  <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo-small.svg" width="200" alt="Nest Logo" /></a>
-</p>
+## Vrillar Testing
 
-[circleci-image]: https://img.shields.io/circleci/build/github/nestjs/nest/master?token=abc123def456
-[circleci-url]: https://circleci.com/gh/nestjs/nest
+Vrillar Formular 1 server.
 
-  <p align="center">A progressive <a href="http://nodejs.org" target="_blank">Node.js</a> framework for building efficient and scalable server-side applications.</p>
-    <p align="center">
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/v/@nestjs/core.svg" alt="NPM Version" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/l/@nestjs/core.svg" alt="Package License" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/dm/@nestjs/common.svg" alt="NPM Downloads" /></a>
-<a href="https://circleci.com/gh/nestjs/nest" target="_blank"><img src="https://img.shields.io/circleci/build/github/nestjs/nest/master" alt="CircleCI" /></a>
-<a href="https://coveralls.io/github/nestjs/nest?branch=master" target="_blank"><img src="https://coveralls.io/repos/github/nestjs/nest/badge.svg?branch=master#9" alt="Coverage" /></a>
-<a href="https://discord.gg/G7Qnnhy" target="_blank"><img src="https://img.shields.io/badge/discord-online-brightgreen.svg" alt="Discord"/></a>
-<a href="https://opencollective.com/nest#backer" target="_blank"><img src="https://opencollective.com/nest/backers/badge.svg" alt="Backers on Open Collective" /></a>
-<a href="https://opencollective.com/nest#sponsor" target="_blank"><img src="https://opencollective.com/nest/sponsors/badge.svg" alt="Sponsors on Open Collective" /></a>
-  <a href="https://paypal.me/kamilmysliwiec" target="_blank"><img src="https://img.shields.io/badge/Donate-PayPal-ff3f59.svg"/></a>
-    <a href="https://opencollective.com/nest#sponsor"  target="_blank"><img src="https://img.shields.io/badge/Support%20us-Open%20Collective-41B883.svg" alt="Support us"></a>
-  <a href="https://twitter.com/nestframework" target="_blank"><img src="https://img.shields.io/twitter/follow/nestframework.svg?style=social&label=Follow"></a>
-</p>
-  <!--[![Backers on Open Collective](https://opencollective.com/nest/backers/badge.svg)](https://opencollective.com/nest#backer)
-  [![Sponsors on Open Collective](https://opencollective.com/nest/sponsors/badge.svg)](https://opencollective.com/nest#sponsor)-->
+## Description App
 
-## Description
+Crawl data base on link: https://www.formula1.com/ Handle API and connect with Database.
 
-[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
+## Description Relationship in Database
 
-## Installation
+- Driver - Team: One-to-Many
+- Team - Schedule: Many-to-Many
+- Schedule - TimetableEvent: One-to-Many
+- TimetableEvent - EventResult: One-to-Many
+
+## Install PostgreSQL and pgAdmin4
+
+- You can following `Setup-Postgres-Nestjs.docx` file in `document-setup` folder to Install PostgreSQL and pgAdmin 4.
+
+## Clone Locally
+
+Clone the server.
+
+```bash
+$ git clone https://github.com/DinhQuocDat1310/vrillarFomula.git
+```
+
+## Environment Variables
+
+To run this project, you need to create `.env` file in root directory and add the following environment variables in `.env.example`.
+
+## Installation dependencies
 
 ```bash
 $ yarn install
 ```
 
-## Running the app
+## Sync Database with `migrations` folder when pull server
+
+```bash
+$ yarn migrate:dev
+```
+
+## 🚀 Start the server
 
 ```bash
 # development
-$ yarn run start
+$ yarn start
 
 # watch mode
 $ yarn run start:dev
@@ -45,7 +54,20 @@ $ yarn run start:dev
 $ yarn run start:prod
 ```
 
-## Test
+## 🔗 Link manage API with Swagger
+
+- Swagger URL: http://localhost:4000/vrillarFomular1_api
+
+## 🚀 Start Prisma Studio
+
+- Run this Bash with another Terminal.
+- View and Edit data with Prisma Studio.
+
+```bash
+$ yarn prisma:studio
+```
+
+## Running Tests
 
 ```bash
 # unit tests
@@ -58,16 +80,13 @@ $ yarn run test:e2e
 $ yarn run test:cov
 ```
 
-## Support
+## Tech
 
-Nest is an MIT-licensed open source project. It can grow thanks to the sponsors and support by the amazing backers. If you'd like to join them, please [read more here](https://docs.nestjs.com/support).
+**Server**:
 
-## Stay in touch
+- Node version: 18.15.0
+- Nest version: 9.4.0
 
-- Author - [Kamil Myśliwiec](https://kamilmysliwiec.com)
-- Website - [https://nestjs.com](https://nestjs.com/)
-- Twitter - [@nestframework](https://twitter.com/nestframework)
+## Used for
 
-## License
-
-Nest is [MIT licensed](LICENSE).
+This server used for the following Vrillar Formular 1: Backend Testing.
