@@ -140,4 +140,20 @@ export class ScheduleService {
       throw new InternalServerErrorException(error.message);
     }
   };
+
+  viewListSchedulesByNamePlace = async (
+    placeName: string,
+  ): Promise<Array<Schedule>> => {
+    try {
+      return await this.prismaService.schedule.findMany({
+        where: {
+          placeName: {
+            contains: placeName,
+          },
+        },
+      });
+    } catch (error) {
+      throw new InternalServerErrorException(error.message);
+    }
+  };
 }

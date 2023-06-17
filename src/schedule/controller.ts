@@ -48,6 +48,20 @@ export class ScheduleController {
     return await this.scheduleService.getListSchedulesCompleted(page);
   }
 
+  @Get('/listPlace/:name')
+  @ApiOkResponse({ description: 'Success view list Schedules' })
+  @ApiBadRequestResponse({ description: 'Failed view list Schedules' })
+  @ApiOperation({
+    summary:
+      'View list Schedules by Place name of Event like [View by Place name of Event]',
+  })
+  @HttpCode(HttpStatus.OK)
+  async viewListSchedulesByNamePlace(
+    @Param('name') name: string,
+  ): Promise<Array<Schedule>> {
+    return await this.scheduleService.viewListSchedulesByNamePlace(name);
+  }
+
   @Get('/listUpcoming')
   @ApiOkResponse({ description: 'Success view list Schedules upcoming' })
   @ApiBadRequestResponse({

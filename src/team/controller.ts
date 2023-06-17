@@ -45,6 +45,20 @@ export class TeamController {
     return await this.teamService.getListTeamsSortByPoints(page, sortMethod);
   }
 
+  @Get('/listByTeam/:teamName')
+  @ApiOkResponse({ description: 'Success view list Teams' })
+  @ApiBadRequestResponse({ description: 'Failed view list Teams' })
+  @ApiOperation({
+    summary:
+      'View list Team by Team name like [View by Team name or Full team name like]',
+  })
+  @HttpCode(HttpStatus.OK)
+  async viewAllTeamByTeamNameLike(
+    @Param('teamName') teamName: string,
+  ): Promise<Array<Team>> {
+    return await this.teamService.viewAllTeamsByTeamNameLike(teamName);
+  }
+
   @Get('/viewDetail/:id')
   @ApiOkResponse({ description: 'Success view detail Teams' })
   @ApiBadRequestResponse({ description: 'Failed view detail Teams' })

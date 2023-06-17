@@ -48,6 +48,33 @@ export class DriverController {
     );
   }
 
+  @Get('/listByTeam/:teamName')
+  @ApiOkResponse({ description: 'Success view list Drivers' })
+  @ApiBadRequestResponse({ description: 'Failed view list Drivers' })
+  @ApiOperation({
+    summary:
+      'View list Driver by Team name like [View by Team name or Full team name like]',
+  })
+  @HttpCode(HttpStatus.OK)
+  async viewAllDriversByTeamNameLike(
+    @Param('teamName') teamName: string,
+  ): Promise<Array<Driver>> {
+    return await this.driverService.viewAllDriversByTeamNameLike(teamName);
+  }
+
+  @Get('/listByName/:name')
+  @ApiOkResponse({ description: 'Success view list Drivers' })
+  @ApiBadRequestResponse({ description: 'Failed view list Drivers' })
+  @ApiOperation({
+    summary: 'View list Driver by Name like [View by Name like]',
+  })
+  @HttpCode(HttpStatus.OK)
+  async viewAllDriversByNameLike(
+    @Param('name') name: string,
+  ): Promise<ListDrivers[]> {
+    return await this.driverService.viewAllDriversByNameLike(name);
+  }
+
   @Get('/viewDetail/:id')
   @ApiOkResponse({ description: 'Success view detail Drivers' })
   @ApiBadRequestResponse({ description: 'Failed view detail Drivers' })

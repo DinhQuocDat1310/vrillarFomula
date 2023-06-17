@@ -66,4 +66,16 @@ export class TimetableService {
     if (!timetable) throw new BadRequestException('Timetable not found');
     return timetable;
   };
+
+  getDetailOfTimetableBelongToSchedule = async (
+    id: string,
+  ): Promise<TimeTableEvent> => {
+    const timetable = await this.prismaService.timeTableEvent.findFirst({
+      where: {
+        scheduleId: id,
+      },
+    });
+    if (!timetable) throw new BadRequestException('Timetable not found');
+    return timetable;
+  };
 }

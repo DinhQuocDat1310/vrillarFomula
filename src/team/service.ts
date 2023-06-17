@@ -84,8 +84,40 @@ export class TeamService {
     }
   };
 
+  viewAllTeamsByTeamNameLike = async (
+    teamName: string,
+  ): Promise<Array<Team>> => {
+    try {
+      return await this.prisma.team.findMany({
+        where: {
+          OR: [
+            {
+              name: {
+                contains: teamName,
+              },
+            },
+            {
+              fullTeamName: {
+                contains: teamName,
+              },
+            },
+          ],
+        },
+        orderBy: {
+          points: 'desc',
+        },
+      });
+    } catch (error) {
+      throw new InternalServerErrorException(error.message);
+    }
+  };
+
   getDetailOfTeam = async (id: string): Promise<Team> => {
-    return await this.findTeamByID(id);
+    try {
+      return await this.findTeamByID(id);
+    } catch (error) {
+      throw new InternalServerErrorException(error.message);
+    }
   };
 
   findTeamByID = async (id: string): Promise<Team> => {

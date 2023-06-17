@@ -57,7 +57,7 @@ export class EventResultController {
   @ApiBadRequestResponse({ description: 'Failed view all Event result' })
   @ApiOperation({
     summary:
-      'View all Event result of Timetable [View Event Result by Timetable ID]',
+      'View all Event result belong to Timetable [View Event Result by ID Timetable]',
   })
   @HttpCode(HttpStatus.OK)
   async viewAllEventResultBelongTimetable(

@@ -31,6 +31,20 @@ export class TimetableController {
     return await this.timetableService.getListTimetable(page);
   }
 
+  @Get('/viewBySchedule/:id')
+  @ApiOkResponse({ description: 'Success view detail Timetable' })
+  @ApiBadRequestResponse({ description: 'Failed view detail Timetable' })
+  @ApiOperation({
+    summary:
+      'View details of Timetable belong to Schedule [View by ID Schedule]',
+  })
+  @HttpCode(HttpStatus.OK)
+  async viewDetailTimetableByIDSchedule(
+    @Param('id') id: string,
+  ): Promise<TimeTableEvent> {
+    return await this.timetableService.getDetailOfTimetableBelongToSchedule(id);
+  }
+
   @Get('/viewDetail/:id')
   @ApiOkResponse({ description: 'Success view detail Timetable' })
   @ApiBadRequestResponse({ description: 'Failed view detail Timetable' })

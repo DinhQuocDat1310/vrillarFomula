@@ -4,7 +4,7 @@ import {
   InternalServerErrorException,
 } from '@nestjs/common';
 import { Driver, Prisma } from '@prisma/client';
-import { DRIVER_PER_PAGE } from 'src/constant/driver';
+import { DRIVER_BY_NAME_PER_PAGE, DRIVER_PER_PAGE } from 'src/constant/driver';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { ListDrivers } from './entities/driver';
 
@@ -85,7 +85,11 @@ export class DriverService {
   };
 
   getDetailOfDriver = async (id: string): Promise<Driver> => {
-    return await this.findDriverByID(id);
+    try {
+      return await this.findDriverByID(id);
+    } catch (error) {
+      throw new InternalServerErrorException(error.message);
+    }
   };
 
   findDriverByID = async (id: string): Promise<Driver> => {
@@ -96,5 +100,63 @@ export class DriverService {
     });
     if (!driver) throw new BadRequestException('Driver not found');
     return driver;
+  };
+
+  viewAllDriversByTeamNameLike = async (
+    teamName: string,
+  ): Promise<Array<Driver>> => {
+    try {
+      return await this.prisma.driver.findMany({
+        where: {
+          team: {
+            OR: [
+              {
+                name: {
+                  contains: teamName,
+                },
+              },
+              {
+                fullTeamName: {
+                  contains: teamName,
+                },
+              },
+            ],
+          },
+        },
+        orderBy: {
+          points: 'desc',
+        },
+      });
+    } catch (err) {
+      throw new InternalServerErrorException(err.message);
+    }
+  };
+
+  viewAllDriversByNameLike = async (name: string): Promise<ListDrivers[]> => {
+    try {
+      return await this.prisma.driver.findMany({
+        where: {
+          name: {
+            contains: name,
+          },
+        },
+        select: {
+          id: true,
+          name: true,
+          rank: true,
+          points: true,
+          imgCountry: true,
+          imgNumber: true,
+          team: {
+            select: {
+              id: true,
+              name: true,
+            },
+          },
+        },
+      });
+    } catch (error) {
+      throw new InternalServerErrorException(error.message);
+    }
   };
 }
