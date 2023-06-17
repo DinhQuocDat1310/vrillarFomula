@@ -35,7 +35,7 @@ To run this project, you need to create `.env` file in root directory and add th
 $ yarn install
 ```
 
-## Sync Database with `migrations` folder when pull server
+## Sync Database with `migrations` folder when pull server and `seed` data
 
 ```bash
 $ yarn migrate:dev
@@ -65,6 +65,12 @@ $ yarn run start:prod
 
 ```bash
 $ yarn prisma:studio
+```
+
+## Manually crawl and seed data
+
+```bash
+$ yarn prisma:seed
 ```
 
 ## Running Tests
